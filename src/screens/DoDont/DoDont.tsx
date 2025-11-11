@@ -1,67 +1,34 @@
 import React from "react";
 
-export const DoDont = (): JSX.Element => {
-  const dos = [
-    "Always verify client identity before processing transactions",
-    "Keep detailed records of all client interactions",
-    "Follow up with clients regularly about their investment goals",
-    "Stay updated with market trends and regulations",
-    "Maintain client confidentiality at all times"
-  ];
+const adherenceList = [
+  "The Notice Board is to be displayed on the outside premises or place of the seat.",
+  "The certificate of registration / the letter of recognition to be displayed on your office premises.",
+  "The trading terminals provided are located at the registered location only and are strictly operated by approved and Certified Users.",
+  "Do not execute KYC directly with clients in your name.",
+  "Do not deal in cash with clients.",
+  "Do not issue bills/ contract notes to the clients in your name.",
+  "Do not be involved in any fund-based activities of collecting money from investors/ public and promising them highperiodic returns.",
+  "Do not involve in illegal trades or dabba trades i.e. trades executed outside the exchange mechanism.",
+  "Do not deal with any other trading member of the same exchange for proprietary trading except with the prior permission from the stock exchange/ Main Broker.",
+  "Do not issue any advertisement soliciting business in newspapers/pamphlets/journals /magazines etc. without obtaining requisite approval from stock exchanges. The application for the same shall be routed through the main broker.",
+  "Do surrender/deactivate inactive terminals where no trading has been done during the last 6 months.",
+  "Do intimate any change in the address to stock exchanges through the main broker immediately.",
+  "Do maintain the IG register for the complaints received from clients."
+];
 
-  const donts = [
-    "Never share client information with unauthorized parties",
-    "Don't make investment decisions without client approval",
-    "Don't provide guarantees about investment returns",
-    "Don't mix personal and client funds",
-    "Don't ignore client complaints or feedback"
-  ];
-
+const DoDont = (): JSX.Element => {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">DO's & DON'Ts</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* DO's Section */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-green-600 mb-4">DO's</h2>
-          <ul className="space-y-4">
-            {dos.map((item, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* DON'Ts Section */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-red-600 mb-4">DON'Ts</h2>
-          <ul className="space-y-4">
-            {donts.map((item, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <svg className="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span className="text-gray-700">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Additional Guidelines */}
-      <div className="mt-6 bg-blue-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-blue-800 mb-3">Important Note</h3>
-        <p className="text-blue-700">
-          These guidelines are designed to ensure the best service for our clients while maintaining
-          compliance with regulatory requirements. Always prioritize client interests and maintain
-          professional standards in all interactions.
-        </p>
+    <div className="p-8 bg-[#f6fbff] min-h-screen">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
+        <h2 className="text-xl font-semibold mb-6 text-gray-800">Adherence of Do’s & Don’t</h2>
+        <ol className="list-decimal list-inside space-y-2 text-gray-700 text-base">
+          {adherenceList.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ol>
       </div>
     </div>
   );
 };
+
+export default DoDont;
