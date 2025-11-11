@@ -1,10 +1,7 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export const Sidebar = (): JSX.Element => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const menuItems = [
     { icon: "grid", label: "Dashboard", path: "/dashboard" },
     { icon: "users", label: "Client Management", path: "/client-management" },
@@ -31,14 +28,14 @@ export const Sidebar = (): JSX.Element => {
 
       <nav className="flex-1 py-6 px-3">
         {menuItems.map((item) => (
-          <button
+          <NavLink
             key={item.path}
-            onClick={() => navigate(item.path)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
-              location.pathname === item.path
-                ? "bg-blue-50 text-blue-600"
-                : "text-gray-600 hover:bg-gray-50"
-            }`}
+            to={item.path}
+            className={({ isActive }) =>
+              `w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
+                isActive ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-50"
+              }`
+            }
           >
             <div className="w-5 h-5 flex items-center justify-center">
               {item.icon === "grid" && (
@@ -78,7 +75,7 @@ export const Sidebar = (): JSX.Element => {
               )}
             </div>
             <span className="text-sm font-medium">{item.label}</span>
-          </button>
+          </NavLink>
         ))}
       </nav>
     </div>
