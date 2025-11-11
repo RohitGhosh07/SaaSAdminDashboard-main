@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Header = (): JSX.Element => {
   return (
@@ -47,7 +48,7 @@ export const Header = (): JSX.Element => {
             </span>
           </button>
 
-          <div className="flex items-center gap-3">
+          <Link to="/profile" className="flex items-center gap-3 cursor-pointer">
             <img
               src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100"
               alt="Profile"
@@ -57,7 +58,7 @@ export const Header = (): JSX.Element => {
               <div className="text-sm font-semibold text-gray-800">Chirag Singh</div>
               <div className="text-xs text-gray-500">chiragsingh@sathi.com</div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
     </header>
