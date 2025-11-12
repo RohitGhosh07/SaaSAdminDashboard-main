@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://crm-backend-fastapi.vercel.app/';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://crm-backend-fastapi-6a49.vercel.app/';
 
 // Create axios instance
 const apiClient = axios.create({
