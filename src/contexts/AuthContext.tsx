@@ -4,6 +4,7 @@ import { authAPI, User, SignInResponse } from '../services/api';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (email: string, name: string, password: string) => Promise<User>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -63,6 +64,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const register = async (email: string, name: string, password: string) => {
+    return await authAPI.register(email, name, password);
+  };
+
   const logout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
@@ -76,6 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         user,
         login,
+        register,
         logout,
         isLoading,
         isAuthenticated,
