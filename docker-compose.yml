@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-saasuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-saaspass}
+      POSTGRES_DB: ${POSTGRES_DB:-saasdb}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      context: ./backend
+    restart: on-failure
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend/app:/app/app:cached
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./:/app:cached
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - '7000'
+    depends_on:
+      - backend
+    command: sh -c "npm run dev -- --host 0.0.0.0"
+
+volumes:
+  db_data:

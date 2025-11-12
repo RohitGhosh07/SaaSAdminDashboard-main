@@ -1,135 +1,160 @@
 # SaaS Admin Dashboard
 
-A modern, responsive admin dashboard built with React, TypeScript, and Tailwind CSS. This dashboard is designed for financial advisors and investment professionals to manage their clients and monitor business activities.
+A full-stack SaaS admin dashboard for managing clients, monitoring revenue, and tracking commissions. The repository contains a modern frontend (React + Vite + TypeScript + Tailwind) and a Python backend (FastAPI-style layout with Alembic migrations).
 
-## Features
-
-### 1. Dashboard
-- Overview of key metrics
-- Quick access to important features
-- Real-time updates and notifications
-
-### 2. Client Management
-- Comprehensive client list view
-- Detailed client profiles
-- Client onboarding and documentation
-
-### 3. Revenue Analysis
-- Total revenue overview
-- Monthly revenue trends
-- Revenue breakdown by source
-- Visual charts and graphs
-
-### 4. Client Activity
-- Real-time activity tracking
-- Filterable activity log
-- Transaction history
-- Client interactions
-
-### 5. Broking Commission
-- Commission tracking
-- Commission rates management
-- Historical commission data
-
-### 6. Mutual Commission
-- Mutual fund commission tracking
-- Commission distribution
-- Performance metrics
-
-### 7. Details
-- General information section
-- Company details
-- Important documentation
-
-### 8. DO's & DON'Ts
-- Best practices guide
-- Compliance guidelines
-- Important reminders
-- Professional standards
-
-### 9. Change Format
-- Customizable layout options
-- Theme settings
-- Display preferences
-- User interface customization
+## Key Features
+- Overview dashboard with key performance metrics
+- Client management and detailed client profiles
+- Revenue analysis and trend charts
+- Client activity logs and transaction history
+- Broking and mutual commission tracking
+- Layout and theme customization
 
 ## Tech Stack
+- Frontend: `React`, `TypeScript`, `Vite`, `Tailwind CSS`
+- Backend: Python (FastAPI-style structure under `app/`), `Alembic` for migrations
+- Bundler / tooling: `Vite`, `npm`
 
-- React
-- TypeScript
-- Tailwind CSS
-- Vite
-- React Router DOM
+## Prerequisites
+- Node.js (recommended 16+)
+- npm (comes with Node.js)
+- Python 3.9+ (for backend)
+- PostgreSQL or another DB (if you plan to run the backend with persistence)
 
-## Getting Started
+## Quick Start (Frontend)
+1. Install dependencies:
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd SaaSAdminDashboard
-```
-
-2. Install dependencies:
-```bash
+```powershell
 npm install
 ```
 
-3. Start the development server:
-```bash
+2. Run the dev server:
+
+```powershell
 npm run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+3. Open the app in your browser at `http://localhost:5173` (Vite default)
 
-## Project Structure
+Useful npm scripts (defined in `package.json`):
+- `dev`: runs the development server
+- `build`: builds a production bundle
+- `preview`: locally preview a production build
 
-```
-src/
-├── components/           # Reusable UI components
-│   ├── Header.tsx
-│   ├── Sidebar.tsx
-│   └── ui/              # Basic UI elements
-├── screens/             # Main application screens
-│   ├── Dashboard/
-│   ├── ClientDetails/
-│   ├── BrokingCommission/
-│   ├── MutualCommission/
-│   ├── RevenueAnalysis/
-│   ├── ClientActivity/
-│   ├── DoDont/
-│   └── ChangeFormat/
-└── lib/                 # Utilities and helpers
-    └── utils.ts
+## Quick Start (Backend)
+The repository contains a Python backend layout under `app/` and Alembic migrations under `alembic/`. Steps below are general — adjust to your specific environment and dependency manager.
+
+1. Create and activate a virtual environment:
+
+```powershell
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
 ```
 
-## Screens Description
+2. Install backend dependencies (if a requirements file exists):
 
-1. **Dashboard**: Main overview screen showing key metrics, recent activities, and quick access to important features.
+```powershell
+pip install -r requirements.txt
+```
 
-2. **Client Management**: Handles all client-related operations including viewing client lists, managing client details, and tracking client interactions.
+3. Configure environment variables (see the Environment section below).
 
-3. **Revenue Analysis**: Provides detailed insights into revenue streams with visual representations and trend analysis.
+4. Run database migrations (example using Alembic):
 
-4. **Client Activity**: Shows real-time client activities, transactions, and interactions with filtering capabilities.
+```powershell
+alembic upgrade head
+```
 
-5. **Broking Commission**: Manages and tracks broking commissions with detailed breakdowns and historical data.
+5. Start the backend server (example using Uvicorn):
 
-6. **Mutual Commission**: Handles mutual fund commission tracking and distribution management.
+```powershell
+uvicorn app.main:app --reload --port 8000
+```
 
-7. **Details**: Contains general information and important documentation.
+Note: The exact import path for Uvicorn may vary depending on how the backend is structured (e.g., `app.main:app`).
 
-8. **DO's & DON'Ts**: Guidelines and best practices for maintaining professional standards and compliance.
+## Environment Variables
+Create a `.env` file or provide env vars in your environment. Common variables used by this project may include:
 
-9. **Change Format**: Allows users to customize the dashboard layout and appearance according to their preferences.
+- `DATABASE_URL` : database connection string (e.g., Postgres URI)
+- `SECRET_KEY` : app secret for sessions or JWT
+- `VITE_API_BASE_URL` : base URL used by the frontend to call the API (e.g., `http://localhost:8000`)
+
+Adjust these to your deployment environment.
+
+## Project Structure (high level)
+```
+.
+├── alembic/                 # DB migration scripts
+├── app/                     # Python backend (models, routers, services)
+│   ├── core/
+│   ├── db/
+│   ├── models/
+│   ├── routers/
+│   └── services/
+├── public/                  # Static assets for frontend
+├── src/                     # Frontend source (React + TypeScript)
+│   ├── components/
+│   │   ├── Header.tsx
+│   │   ├── Sidebar.tsx
+│   │   └── ui/
+│   ├── screens/
+│   └── index.tsx
+├── package.json
+├── tailwind.config.js
+└── vite.config.ts
+```
+
+## Useful Commands
+- Install frontend deps: `npm install`
+- Run frontend dev server: `npm run dev`
+- Build frontend: `npm run build`
+- Activate Python venv: `python -m venv .venv` and activate
+- Run backend (uvicorn): `uvicorn app.main:app --reload --port 8000`
+
+## Deployment Notes
+- Frontend: build with `npm run build` and serve the `dist/` directory using a static hosting provider.
+- Backend: deploy the Python app to your preferred host (Docker, Kubernetes, cloud provider). Ensure env vars and DB are configured and migrations are run.
+
+### Run full stack with Docker Compose (development)
+
+The repository includes a `docker-compose.yml` that starts Postgres, the FastAPI backend, and the frontend (Vite) dev server together.
+
+1. Copy the example env file:
+
+```powershell
+copy .env.example .env
+```
+
+2. Start the stack:
+
+```powershell
+docker compose up --build
+```
+
+3. Services:
+- Frontend (Vite dev server): `http://localhost:5173`
+- Backend (FastAPI): `http://localhost:8000` (API docs at `/docs`)
+- Postgres: `localhost:5432`
+
+After the port change, frontend will be available on `http://localhost:7000` (the Vite server continues to run on `5173` inside the container).
+
+Notes:
+- The frontend service uses a small Dockerfile at `docker/frontend.Dockerfile` to cache npm installs. Source is mounted into the container for live reloads.
+- On Windows, file-watch issues may occur; `CHOKIDAR_USEPOLLING=true` is set for reliability.
+- For production, build the frontend (`npm run build`) and serve statically; remove the dev server from Compose.
 
 ## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- Fork the repository, create a feature branch, and open a Pull Request.
+- Follow existing code style (TypeScript + Tailwind patterns for frontend; follow backend conventions for Python).
 
 ## License
+This project is licensed under the MIT License — see the `LICENSE` file for details.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## Contact
+If you have questions, open an issue or contact the repository owner.
+
+---
+If you'd like, I can also:
+- add a minimal `CONTRIBUTING.md`
+- add a short `docker-compose.yml` to run both frontend and backend locally
+- run the frontend dev server and verify it boots successfully on this machine
