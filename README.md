@@ -1,160 +1,328 @@
 # SaaS Admin Dashboard
 
-A full-stack SaaS admin dashboard for managing clients, monitoring revenue, and tracking commissions. The repository contains a modern frontend (React + Vite + TypeScript + Tailwind) and a Python backend (FastAPI-style layout with Alembic migrations).
+A full-stack SaaS Admin Dashboard application with React frontend and FastAPI backend, featuring authentication, client management, and real-time backend connection monitoring.
 
-## Key Features
-- Overview dashboard with key performance metrics
-- Client management and detailed client profiles
-- Revenue analysis and trend charts
-- Client activity logs and transaction history
-- Broking and mutual commission tracking
-- Layout and theme customization
+## Features
 
-## Tech Stack
-- Frontend: `React`, `TypeScript`, `Vite`, `Tailwind CSS`
-- Backend: Python (FastAPI-style structure under `app/`), `Alembic` for migrations
-- Bundler / tooling: `Vite`, `npm`
+✅ **Authentication System**
+- User registration and login
+- JWT token-based authentication
+- Protected routes and automatic token refresh
+- Session management with localStorage
 
-## Prerequisites
-- Node.js (recommended 16+)
-- npm (comes with Node.js)
-- Python 3.9+ (for backend)
-- PostgreSQL or another DB (if you plan to run the backend with persistence)
+✅ **Frontend Features**
+- React with TypeScript
+- Modern UI with Tailwind CSS
+- Real-time backend connection status indicator
+- Client management interface
+- Responsive dashboard design
+- Protected routing system
 
-## Quick Start (Frontend)
-1. Install dependencies:
+✅ **Backend API**
+- FastAPI with Python 3.11
+- PostgreSQL database
+- RESTful API endpoints
+- JWT authentication middleware
+- SQLAlchemy ORM
+- CORS enabled for frontend integration
 
-```powershell
-npm install
+✅ **Full Integration**
+- Dockerized full-stack application
+- Frontend-backend API integration
+- Database persistence
+- Health check endpoints
+- Environment-based configuration
+
+## Architecture
+
+```
+├── Frontend (React + TypeScript)
+│   ├── Authentication context
+│   ├── API service layer
+│   ├── Protected routing
+│   └── Backend status monitoring
+├── Backend (FastAPI + Python)
+│   ├── Authentication (JWT)
+│   ├── Client management API
+│   ├── Database models
+│   └── Health monitoring
+└── Database (PostgreSQL)
+    ├── User management
+    └── Client data storage
 ```
 
-2. Run the dev server:
+## Quick Start
 
-```powershell
+### Prerequisites
+- Docker and Docker Compose
+- Git
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd SaaSAdminDashboard-main
+```
+
+### 2. Environment Setup
+Copy the `.env` file (already provided):
+```bash
+# Database Configuration
+POSTGRES_USER=saasuser
+POSTGRES_PASSWORD=saaspass
+POSTGRES_DB=saasdb
+DATABASE_URL=postgresql://saasuser:saaspass@db:5432/saasdb
+
+# JWT Configuration
+SECRET_KEY=your-super-secret-jwt-key-change-this-in-production
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# API Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+```
+
+### 3. Build and Start Services
+```bash
+# Build all services
+docker compose build
+
+# Start all services
+docker compose up -d
+```
+
+### 4. Create Test User
+```bash
+docker compose exec backend python -c "
+from app.db import SessionLocal
+from app.models import User
+from app.routers.auth import get_password_hash
+
+db = SessionLocal()
+try:
+    user = User(
+        email='admin@example.com',
+        name='Admin User',
+        hashed_password=get_password_hash('admin123')
+    )
+    db.add(user)
+    db.commit()
+    print('Test user created: admin@example.com / admin123')
+finally:
+    db.close()
+"
+```
+
+### 5. Access the Application
+
+- **Frontend**: http://localhost:7000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+- **Database**: localhost:5432
+
+## Login Credentials
+
+Use these credentials to sign in:
+- **Email**: `admin@example.com`
+- **Password**: `admin123`
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/signin` - User sign in
+- `POST /auth/register` - User registration
+- `GET /auth/me` - Get current user info
+
+### Client Management
+- `GET /clients/` - List all clients
+- `POST /clients/` - Create new client
+- `GET /clients/{id}` - Get specific client
+
+### Health Check
+- `GET /healthz` - Backend health status
+
+## Development
+
+### Frontend Development
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-3. Open the app in your browser at `http://localhost:5173` (Vite default)
-
-Useful npm scripts (defined in `package.json`):
-- `dev`: runs the development server
-- `build`: builds a production bundle
-- `preview`: locally preview a production build
-
-## Quick Start (Backend)
-The repository contains a Python backend layout under `app/` and Alembic migrations under `alembic/`. Steps below are general — adjust to your specific environment and dependency manager.
-
-1. Create and activate a virtual environment:
-
-```powershell
-python -m venv .venv; .\.venv\Scripts\Activate.ps1
-```
-
-2. Install backend dependencies (if a requirements file exists):
-
-```powershell
+### Backend Development
+```bash
+# Install Python dependencies
+cd backend
 pip install -r requirements.txt
+
+# Run development server
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-3. Configure environment variables (see the Environment section below).
+### Database Management
+```bash
+# Access database
+docker compose exec db psql -U saasuser -d saasdb
 
-4. Run database migrations (example using Alembic):
-
-```powershell
-alembic upgrade head
+# View logs
+docker compose logs backend
+docker compose logs frontend
+docker compose logs db
 ```
 
-5. Start the backend server (example using Uvicorn):
+## Project Structure
 
-```powershell
-uvicorn app.main:app --reload --port 8000
+```
+├── src/                        # Frontend source code
+│   ├── components/             # React components
+│   │   ├── Layout.tsx         # Main layout with sidebar/header
+│   │   ├── Header.tsx         # Header with user info & status
+│   │   ├── Sidebar.tsx        # Navigation sidebar
+│   │   ├── BackendStatus.tsx  # Connection status indicator
+│   │   └── ProtectedRoute.tsx # Auth guard component
+│   ├── contexts/              # React contexts
+│   │   └── AuthContext.tsx    # Authentication state management
+│   ├── services/              # API integration
+│   │   └── api.ts            # Axios-based API client
+│   ├── screens/               # Page components
+│   │   ├── SignIn/           # Authentication pages
+│   │   ├── Dashboard/        # Main dashboard
+│   │   └── ClientDetails/    # Client management
+│   └── index.tsx             # App entry point
+├── backend/                   # Backend source code
+│   └── app/                  # FastAPI application
+│       ├── main.py           # FastAPI app initialization
+│       ├── models.py         # Database models
+│       ├── schemas.py        # Pydantic schemas
+│       ├── db.py            # Database connection
+│       └── routers/         # API route handlers
+│           ├── auth.py      # Authentication endpoints
+│           └── clients.py   # Client management endpoints
+├── docker-compose.yml         # Docker orchestration
+├── Dockerfile                 # Backend container definition
+├── docker/frontend.Dockerfile # Frontend container definition
+└── .env                      # Environment configuration
 ```
 
-Note: The exact import path for Uvicorn may vary depending on how the backend is structured (e.g., `app.main:app`).
+## Features Demo
 
-## Environment Variables
-Create a `.env` file or provide env vars in your environment. Common variables used by this project may include:
+### 1. Backend Connection Status
+- Green dot: Backend connected
+- Red dot: Backend disconnected  
+- Yellow dot: Checking connection
+- Auto-refresh every 30 seconds
+- Visible in header and sign-in page
 
-- `DATABASE_URL` : database connection string (e.g., Postgres URI)
-- `SECRET_KEY` : app secret for sessions or JWT
-- `VITE_API_BASE_URL` : base URL used by the frontend to call the API (e.g., `http://localhost:8000`)
+### 2. Authentication Flow
+1. Navigate to http://localhost:7000
+2. Use credentials: `admin@example.com` / `admin123`
+3. Successful login redirects to dashboard
+4. JWT token stored in localStorage
+5. Protected routes require authentication
+6. Logout clears session and redirects to sign-in
 
-Adjust these to your deployment environment.
+### 3. Client Management
+- View list of all clients
+- Add new clients with name, email, phone
+- Real-time updates after client creation
+- API integration with backend validation
 
-## Project Structure (high level)
-```
-.
-├── alembic/                 # DB migration scripts
-├── app/                     # Python backend (models, routers, services)
-│   ├── core/
-│   ├── db/
-│   ├── models/
-│   ├── routers/
-│   └── services/
-├── public/                  # Static assets for frontend
-├── src/                     # Frontend source (React + TypeScript)
-│   ├── components/
-│   │   ├── Header.tsx
-│   │   ├── Sidebar.tsx
-│   │   └── ui/
-│   ├── screens/
-│   └── index.tsx
-├── package.json
-├── tailwind.config.js
-└── vite.config.ts
-```
+## Troubleshooting
 
-## Useful Commands
-- Install frontend deps: `npm install`
-- Run frontend dev server: `npm run dev`
-- Build frontend: `npm run build`
-- Activate Python venv: `python -m venv .venv` and activate
-- Run backend (uvicorn): `uvicorn app.main:app --reload --port 8000`
+### Services Not Starting
+```bash
+# Check service status
+docker compose ps
 
-## Deployment Notes
-- Frontend: build with `npm run build` and serve the `dist/` directory using a static hosting provider.
-- Backend: deploy the Python app to your preferred host (Docker, Kubernetes, cloud provider). Ensure env vars and DB are configured and migrations are run.
+# View service logs
+docker compose logs [service_name]
 
-### Run full stack with Docker Compose (development)
-
-The repository includes a `docker-compose.yml` that starts Postgres, the FastAPI backend, and the frontend (Vite) dev server together.
-
-1. Copy the example env file:
-
-```powershell
-copy .env.example .env
+# Restart services
+docker compose restart
 ```
 
-2. Start the stack:
+### Database Connection Issues
+```bash
+# Ensure database is healthy
+docker compose exec db pg_isready -U saasuser
 
-```powershell
-docker compose up --build
+# Reset database
+docker compose down -v
+docker compose up -d
 ```
 
-3. Services:
-- Frontend (Vite dev server): `http://localhost:5173`
-- Backend (FastAPI): `http://localhost:8000` (API docs at `/docs`)
-- Postgres: `localhost:5432`
+### Frontend Build Issues
+```bash
+# Clean and rebuild
+docker compose down
+docker compose build frontend --no-cache
+docker compose up -d
+```
 
-After the port change, frontend will be available on `http://localhost:7000` (the Vite server continues to run on `5173` inside the container).
+### API Authentication Issues
+```bash
+# Verify backend health
+curl http://localhost:8000/healthz
 
-Notes:
-- The frontend service uses a small Dockerfile at `docker/frontend.Dockerfile` to cache npm installs. Source is mounted into the container for live reloads.
-- On Windows, file-watch issues may occur; `CHOKIDAR_USEPOLLING=true` is set for reliability.
-- For production, build the frontend (`npm run build`) and serve statically; remove the dev server from Compose.
+# Test authentication
+curl -X POST http://localhost:8000/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"admin123"}'
+```
+
+## Production Considerations
+
+1. **Security**
+   - Change `SECRET_KEY` in `.env`
+   - Use proper password hashing (bcrypt)
+   - Enable HTTPS
+   - Implement rate limiting
+
+2. **Database**
+   - Use managed PostgreSQL service
+   - Implement database migrations
+   - Add connection pooling
+   - Regular backups
+
+3. **Deployment**
+   - Use production Docker images
+   - Implement health checks
+   - Set up monitoring and logging
+   - Use environment-specific configurations
+
+4. **Performance**
+   - Enable Redis for caching
+   - Implement API pagination
+   - Optimize database queries
+   - Add CDN for static assets
 
 ## Contributing
-- Fork the repository, create a feature branch, and open a Pull Request.
-- Follow existing code style (TypeScript + Tailwind patterns for frontend; follow backend conventions for Python).
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -am 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit pull request
 
 ## License
-This project is licensed under the MIT License — see the `LICENSE` file for details.
 
-## Contact
-If you have questions, open an issue or contact the repository owner.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions:
+- Create an issue in the repository
+- Check the troubleshooting section
+- Review Docker logs for debugging
 
 ---
-If you'd like, I can also:
-- add a minimal `CONTRIBUTING.md`
-- add a short `docker-compose.yml` to run both frontend and backend locally
-- run the frontend dev server and verify it boots successfully on this machine
+
+**Full-Stack Integration Complete** ✅
+- Frontend: React + TypeScript + Tailwind CSS
+- Backend: FastAPI + Python + PostgreSQL
+- Authentication: JWT-based with session management
+- Real-time: Backend connection monitoring
+- Docker: Full containerization with health checks

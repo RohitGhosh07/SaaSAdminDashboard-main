@@ -1,195 +1,164 @@
-import React from "react";
-import { Sidebar } from "../../components/Sidebar";
-import { Header } from "../../components/Header";
+import React, { useState, useEffect } from "react";
+import { clientsAPI, Client, CreateClientRequest } from "../../services/api";
 
 export const ClientDetails = (): JSX.Element => {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState<CreateClientRequest>({
+    name: "",
+    email: "",
+    phone: ""
+  });
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+      const data = await clientsAPI.getClients();
+      setClients(data);
+    } catch (err) {
+      setError("Failed to fetch clients");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await clientsAPI.createClient(formData);
+      setFormData({ name: "", email: "", phone: "" });
+      setShowForm(false);
+      fetchClients(); // Refresh the list
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to create client");
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading clients...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* <Sidebar /> */}
-      <div className="flex-1 flex flex-col">
-        {/* <Header /> */}
-        <main className="flex-1 p-8">
-          <div className="bg-white rounded-2xl shadow-sm p-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">Information</h2>
+    <div className="p-8">
+      <div className="bg-white rounded-2xl shadow-sm p-8">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Client Management</h2>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {showForm ? "Cancel" : "Add Client"}
+          </button>
+        </div>
 
-            <div className="bg-blue-50 rounded-xl p-6 mb-8">
-              <div className="grid grid-cols-3 gap-6">
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Full Name</div>
-                  <div className="text-base font-medium text-gray-800">Alok Kumar Choudhary</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Back Office ID</div>
-                  <div className="text-base font-medium text-gray-800">A12345</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Terminal ID</div>
-                  <div className="text-base font-medium text-gray-800">A12345</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Branch Code</div>
-                  <div className="text-base font-medium text-gray-800">A004</div>
-                </div>
-              </div>
-            </div>
-
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
-              Registration Details
-            </h3>
-
-            <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">Applicant Name</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  Alok Kumar Choudhary
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CM Reg No-</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  AP17101073501
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">Trade Name</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  Alok Kumar Choudhary
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CM Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  27-03-2019
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">PAN No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  ACAPC1180K
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE FNO Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  AP17101040401
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">Constitution</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  Individual
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE FNO Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  04-05-2009
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">RM Name</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  Santhosh Prasad
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CF Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  AP17101073501
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE Segment</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  CIFIX
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CF Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  29-06-2015
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CO Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  AP17101073501
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NCDEX Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800"></div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NSE CO Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  27-03-2019
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">NCDEX Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800"></div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">BSE Segments</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  C
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">MSEI Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  7057
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">BSE Reg- No</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  AP-010912015425
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">MSEI Segment</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  CDXICMIFO
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">BSE Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  19-02-2018
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-gray-600 w-48">MSEI Reg- Date</div>
-                <div className="flex-1 bg-gray-50 px-4 py-2 rounded-lg text-sm text-gray-800">
-                  08-03-2023
-                </div>
-              </div>
-            </div>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            {error}
           </div>
-        </main>
+        )}
+
+        {showForm && (
+          <div className="bg-gray-50 rounded-xl p-6 mb-8">
+            <h3 className="text-lg font-medium text-gray-800 mb-4">Add New Client</h3>
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone (Optional)
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Create Client
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {clients.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-500 text-lg mb-2">No clients found</div>
+              <div className="text-gray-400 text-sm">Add your first client to get started</div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 gap-4 p-3 bg-gray-100 rounded-lg font-semibold text-sm text-gray-700">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Phone</div>
+                <div>Created Date</div>
+              </div>
+              {clients.map((client) => (
+                <div key={client.id} className="grid grid-cols-4 gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="text-gray-800 font-medium">{client.name}</div>
+                  <div className="text-gray-600">{client.email}</div>
+                  <div className="text-gray-600">{client.phone || "N/A"}</div>
+                  <div className="text-gray-500 text-sm">
+                    {new Date(client.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
