@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { BackendStatus } from "./BackendStatus";
+import { UserAvatar } from "./UserAvatar";
 
 export const Header = (): JSX.Element => {
   const { user, logout } = useAuth();
@@ -62,10 +63,9 @@ export const Header = (): JSX.Element => {
 
           <div className="flex items-center gap-3">
             <Link to="/profile" className="flex items-center gap-3 cursor-pointer">
-              <img
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=100&h=100"
-                alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
+              <UserAvatar
+                name={user?.name || "User"}
+                size="md"
               />
               <div>
                 <div className="text-sm font-semibold text-gray-800">{user?.name || "User"}</div>

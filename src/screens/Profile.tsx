@@ -1,6 +1,16 @@
 import React from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { UserAvatar } from "../components/UserAvatar";
 
 const Profile: React.FC = () => {
+  const { user } = useAuth();
+
+  // Split the name into first and last name
+  const fullName = user?.name || "";
+  const nameParts = fullName.trim().split(" ");
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
+
   return (
     <div className="p-8 bg-[#f6fbff] min-h-screen">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-8">
@@ -10,12 +20,14 @@ const Profile: React.FC = () => {
             <span className="material-icons">photo_camera</span> Change Cover
           </button>
           <div className="absolute -bottom-16 left-8 flex flex-col items-center">
-            <img
-              src="https://randomuser.me/api/portraits/men/32.jpg"
-              alt="Profile"
-              className="w-36 h-44 object-cover rounded-xl border-4 border-white shadow-lg"
-            />
-            <span className="mt-2 font-semibold text-lg text-blue-900">Chirag Singh</span>
+            <div className="w-36 h-44 rounded-xl border-4 border-white shadow-lg overflow-hidden bg-white flex items-center justify-center">
+              <UserAvatar
+                name={fullName}
+                size="xl"
+                className="w-full h-full rounded-lg"
+              />
+            </div>
+            <span className="mt-2 font-semibold text-lg text-blue-900">{fullName}</span>
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-8 mt-16">
@@ -23,7 +35,7 @@ const Profile: React.FC = () => {
             <label className="font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              value="Chirag"
+              value={firstName}
               className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
               readOnly
             />
@@ -32,7 +44,18 @@ const Profile: React.FC = () => {
             <label className="font-medium text-gray-700">Last Name</label>
             <input
               type="text"
-              value="Singh"
+              value={lastName}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              readOnly
+            />
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row gap-8 mt-8">
+          <div className="flex-1 flex flex-col gap-4">
+            <label className="font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={user?.email || ""}
               className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
               readOnly
             />
