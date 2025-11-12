@@ -7,7 +7,7 @@ export const ClientDetails = (): JSX.Element => {
     <div className="flex min-h-screen bg-gray-50">
       {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col">
-        <Header />
+        {/* <Header /> */}
         <main className="flex-1 p-8">
           <div className="bg-white rounded-2xl shadow-sm p-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">Information</h2>

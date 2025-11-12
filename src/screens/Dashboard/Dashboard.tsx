@@ -7,7 +7,7 @@ export const Dashboard = (): JSX.Element => {
     <div className="flex min-h-screen bg-gray-50">
       {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col">
-        <Header />
+        {/* <Header /> */}
         <main className="flex-1 p-8">
           <h1 className="text-2xl font-semibold text-gray-800 mb-6">
             Dashboard Overview
